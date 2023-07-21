@@ -123,7 +123,7 @@ def post_response(daft_url):
         password.send_keys(daft_creds[1])
 
         # Click login button and wait for load
-        browser.find_element(By.NAME, "login").click()
+        browser.find_element(By.ID, "login").click()
         time.sleep(5)
 
         # Click on button to open contact form and wait for load
@@ -142,6 +142,8 @@ def post_response(daft_url):
         phone.send_keys(payload[2])
         message = browser.find_element(By.NAME, "message")
         message.send_keys(payload[3])
+        browser.find_element(By.XPATH, '//button[@aria-label="adultTenants-increment"]').click()
+        time.sleep(1)
 
         # Click on button to send contact form
         browser.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
