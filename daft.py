@@ -36,9 +36,9 @@ def main():
                         post_response(daft_url)
 
                     # If fails for any reason, write the URL to file for checking later
-                    except Exception:
+                    except Exception as e:
                         with open("data/missed_ads.txt", "a") as file:
-                            file.write(daft_url + "\n")
+                            file.write(daft_url + "\n\n" + e + "\n\n")
 
             # Wait for one minute
             time.sleep(60)
