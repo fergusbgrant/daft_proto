@@ -13,8 +13,8 @@ def main():
         # Get mail object
         mail = init_mail()
 
-        # Loop to check inbox once a minute 3 times
-        for _ in range(3):
+        # Loop to check inbox every 10 seconds 18 times
+        for _ in range(36):
             # Select inbox
             try:
                 mail.select("PropertyAlerts")
@@ -38,10 +38,10 @@ def main():
                     # If fails for any reason, write the URL to file for checking later
                     except Exception as e:
                         with open("data/missed_ads.txt", "a") as file:
-                            file.write(daft_url + "\n\n" + e + "\n\n")
+                            file.write(daft_url + "\n\n" + str(e) + "\n\n")
 
-            # Wait for one minute
-            time.sleep(60)
+            # Wait for 5 seconds
+            time.sleep(5)
 
 
 def init_mail():
@@ -96,17 +96,17 @@ def get_url(mail, msg):
 def post_response(daft_url):
     # Create options object for browser and set to headless
     options = uc.ChromeOptions()
-    options.add_argument("--headless")
+    #options.add_argument("--headless")
 
     # Create browser object
     with uc.Chrome(use_subprocess=True, options=options) as browser:
+
         # Navigate to property URL
         browser.get(daft_url)
+        time.sleep(5)
 
         # Click on button to accept cookies and wait for load
-        browser.find_element(
-            By.XPATH, '//button[@onclick="CookieConsent.acceptAll();"]'
-        ).click()
+        browser.find_element(By.XPATH, '//button[@aria-label="Agree and close: Agree to our data processing and close"]').click()
         time.sleep(5)
 
         # Click on button to log in and wait for load
@@ -134,19 +134,23 @@ def post_response(daft_url):
         payload = get_payload("data/daft_form.txt")
 
         # Populate contact form
-        name = browser.find_element(By.NAME, "name")
-        name.send_keys(payload[0])
+        firstname = browser.find_element(By.NAME, "firstName")
+        firstname.send_keys(payload[0])
+        lastname = browser.find_element(By.NAME, "lastName")
+        lastname.send_keys(payload[1])
         email = browser.find_element(By.NAME, "email")
-        email.send_keys(payload[1])
+        email.send_keys(payload[2])
         phone = browser.find_element(By.NAME, "phone")
-        phone.send_keys(payload[2])
+        phone.send_keys(payload[3])
         message = browser.find_element(By.NAME, "message")
-        message.send_keys(payload[3])
-        browser.find_element(By.XPATH, '//button[@aria-label="adultTenants-increment"]').click()
+        message.send_keys(payload[4])
         time.sleep(1)
 
         # Click on button to send contact form
         browser.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
+        time.sleep(1)
+
+        browser.quit()
 
 
 if __name__ == "__main__":
