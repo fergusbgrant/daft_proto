@@ -8,6 +8,8 @@ import undetected_chromedriver as uc
 
 
 def main():
+    print('\nRunning\n')
+
     # Loop for gmail re-login every 3-4 minutes
     while True:
         # Get mail object
@@ -96,7 +98,9 @@ def get_url(mail, msg):
 def post_response(daft_url):
     # Create options object for browser and set to headless
     options = uc.ChromeOptions()
-    #options.add_argument("--headless")
+    options.add_argument("--headless")
+    ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+    options.add_argument(f'--user-agent={ua}')
 
     # Create browser object
     with uc.Chrome(use_subprocess=True, options=options) as browser:
@@ -106,7 +110,7 @@ def post_response(daft_url):
         time.sleep(5)
 
         # Click on button to accept cookies and wait for load
-        browser.find_element(By.XPATH, '//button[@aria-label="Agree and close: Agree to our data processing and close"]').click()
+        browser.find_element(By.ID, "didomi-notice-agree-button").click()
         time.sleep(5)
 
         # Click on button to log in and wait for load
@@ -144,6 +148,7 @@ def post_response(daft_url):
         phone.send_keys(payload[3])
         message = browser.find_element(By.NAME, "message")
         message.send_keys(payload[4])
+        browser.find_element(By.XPATH, '//label[@data-testid="hasPets-item-1-div"]').click()
         time.sleep(1)
 
         # Click on button to send contact form
@@ -151,6 +156,8 @@ def post_response(daft_url):
         time.sleep(1)
 
         browser.quit()
+
+    print(f'\nReplied to {daft_url}\n')
 
 
 if __name__ == "__main__":
