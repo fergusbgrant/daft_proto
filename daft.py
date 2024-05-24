@@ -39,6 +39,7 @@ def main():
 
                     # If fails for any reason, write the URL to file for checking later
                     except Exception as e:
+                        print(f'Error with {daft_url}\n')
                         with open("data/missed_ads.txt", "a") as file:
                             file.write(daft_url + "\n\n" + str(e) + "\n\n")
 
@@ -103,61 +104,62 @@ def post_response(daft_url):
     options.add_argument(f'--user-agent={ua}')
 
     # Create browser object
-    with uc.Chrome(use_subprocess=True, options=options) as browser:
+    browser = uc.Chrome(use_subprocess=True, options=options)
 
-        # Navigate to property URL
-        browser.get(daft_url)
-        time.sleep(5)
+    # Navigate to property URL
+    browser.get(daft_url)
+    time.sleep(5)
 
-        # Click on button to accept cookies and wait for load
-        browser.find_element(By.ID, "didomi-notice-agree-button").click()
-        time.sleep(5)
+    # Click on button to accept cookies and wait for load
+    browser.find_element(By.ID, "didomi-notice-agree-button").click()
+    time.sleep(5)
 
-        # Click on button to log in and wait for load
-        browser.find_element(By.XPATH, '//a[@href="/auth/authenticate"]').click()
-        time.sleep(5)
+    # Click on button to log in and wait for load
+    browser.find_element(By.XPATH, '//a[@href="/auth/authenticate"]').click()
+    time.sleep(5)
 
-        # Get credentials for daft.ie
-        daft_creds = get_payload("data/daft_creds.txt")
+    # Get credentials for daft.ie
+    daft_creds = get_payload("data/daft_creds.txt")
 
-        # Populate login form
-        username = browser.find_element(By.ID, "username")
-        username.send_keys(daft_creds[0])
-        password = browser.find_element(By.ID, "password")
-        password.send_keys(daft_creds[1])
+    # Populate login form
+    username = browser.find_element(By.ID, "username")
+    username.send_keys(daft_creds[0])
+    password = browser.find_element(By.ID, "password")
+    password.send_keys(daft_creds[1])
 
-        # Click login button and wait for load
-        browser.find_element(By.ID, "login").click()
-        time.sleep(5)
+    # Click login button and wait for load
+    browser.find_element(By.ID, "login").click()
+    time.sleep(5)
 
-        # Click on button to open contact form and wait for load
-        browser.find_element(By.XPATH, '//button[@data-tracking="email-btn"]').click()
-        time.sleep(3)
+    # Click on button to open contact form and wait for load
+    browser.find_element(By.XPATH, '//button[@data-tracking="email-btn"]').click()
+    time.sleep(3)
 
-        # Get info for contact form
-        payload = get_payload("data/daft_form.txt")
+    # Get info for contact form
+    payload = get_payload("data/daft_form.txt")
 
-        # Populate contact form
-        firstname = browser.find_element(By.NAME, "firstName")
-        firstname.send_keys(payload[0])
-        lastname = browser.find_element(By.NAME, "lastName")
-        lastname.send_keys(payload[1])
-        email = browser.find_element(By.NAME, "email")
-        email.send_keys(payload[2])
-        phone = browser.find_element(By.NAME, "phone")
-        phone.send_keys(payload[3])
-        message = browser.find_element(By.NAME, "message")
-        message.send_keys(payload[4])
-        browser.find_element(By.XPATH, '//label[@data-testid="hasPets-item-1-div"]').click()
-        time.sleep(1)
+    # Populate contact form
+    firstname = browser.find_element(By.NAME, "firstName")
+    firstname.send_keys(payload[0])
+    lastname = browser.find_element(By.NAME, "lastName")
+    lastname.send_keys(payload[1])
+    email = browser.find_element(By.NAME, "email")
+    email.send_keys(payload[2])
+    phone = browser.find_element(By.NAME, "phone")
+    phone.send_keys(payload[3])
+    message = browser.find_element(By.NAME, "message")
+    message.send_keys(payload[4])
+    browser.find_element(By.XPATH, '//label[@data-testid="hasPets-item-1-div"]').click()
+    time.sleep(1)
 
-        # Click on button to send contact form
-        browser.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
-        time.sleep(1)
+    # Click on button to send contact form
+    browser.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
+    time.sleep(1)
 
-        browser.quit()
+    print(f'Replied to {daft_url}\n')
 
-    print(f'\nReplied to {daft_url}\n')
+    browser.close()
+    browser.quit()
 
 
 if __name__ == "__main__":
