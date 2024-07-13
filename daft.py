@@ -3,6 +3,7 @@ import imaplib
 import quopri
 import re
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 import undetected_chromedriver as uc
 
@@ -149,12 +150,12 @@ def post_response(daft_url):
     phone.send_keys(payload[3])
     message = browser.find_element(By.NAME, "message")
     message.send_keys(payload[4])
-    browser.find_element(By.XPATH, '//label[@data-testid="adultTenants-increment-button"]').click()
+    browser.find_element(By.XPATH, '//button[@data-testid="adultTenants-increment-button"]').click()
     browser.find_element(By.XPATH, '//label[@data-testid="hasPets-item-1-div"]').click()
     time.sleep(1)
 
     # Click on button to send contact form
-    browser.find_element(By.XPATH, '//button[@aria-label="Send"]').click()
+    browser.find_element(By.XPATH, '//button[@aria-label="Send"]').send_keys(Keys.ENTER)
     time.sleep(1)
 
     print(f'Replied to {daft_url}\n')
