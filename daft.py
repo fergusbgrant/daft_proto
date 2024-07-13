@@ -149,6 +149,7 @@ def post_response(daft_url):
     phone.send_keys(payload[3])
     message = browser.find_element(By.NAME, "message")
     message.send_keys(payload[4])
+    browser.find_element(By.XPATH, '//label[@data-testid="adultTenants-increment-button"]').click()
     browser.find_element(By.XPATH, '//label[@data-testid="hasPets-item-1-div"]').click()
     time.sleep(1)
 
