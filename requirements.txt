@@ -1,2 +1,3 @@
+asyncio
 selenium
-undetected-chromedriver
+zendriver
